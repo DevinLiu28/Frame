@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.batis.dept.DeptMapper">
+    <resultMap id="deptEmp" type="com.batis.dept.DeptEmp">
+        <id column="deptno" property="deptno"/>
+        <result column="dname" property="dname"/>
+        <result column="loc" property="loc"/>
+        <collection property="empList" ofType="com.batis.pojo.Emp">
+            <id column="empno" property="empno"/>
+            <result column="ename" property="ename"/>
+            <result column="job" property="job"/>
+            <result column="mgr" property="mgr"/>
+            <result column="hiredate" property="hiredate"/>
+            <result column="sal" property="sal"/>
+            <result column="comm" property="comm"/>
+        </collection>
+    </resultMap>
+
+    <select id="testIf" resultMap="deptEmp">
+        select * from dept
+        left join emp on dept.deptno = emp.deptno
+        where 1 = 1
+        <if test="empno != null">
+            and empno = #{empno}
+        </if>
+        <if test="ename != null and ename != ''">
+            and ename = #{ename}
+        </if>
+    </select>
+
+    <select id="testTrim" resultMap="deptEmp">
+        select * from dept
+        left join emp on dept.deptno = emp.deptno
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="ename != null and ename != ''">
+                and ename = #{ename}
+            </if>
+            <if test="job != null and job != ''">
+                and job = #{job}
+            </if>
+        </trim>
+    </select>
+
+    <select id="testChooseWhen" resultMap="deptEmp">
+        select * from dept
+        left join emp on dept.deptno = emp.deptno
+        where 1 = 1
+        <choose>
+            <when test="job != null and job != ''">
+                and job = #{job}
+            </when>
+            <when test="ename != null and ename != ''">
+                and ename = #{ename}
+            </when>
+        </choose>
+    </select>
+
+    <select id="testForeachList" resultMap="deptEmp">
+        select * from dept
+        left join emp on dept.deptno = emp.deptno
+        <foreach collection="list" item="item" index="index" open="where dept.deptno in (" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="testForeachArray" resultMap="deptEmp">
+        select * from dept
+        left join emp on dept.deptno = emp.deptno
+        <if test="#{ids}.length > 0">
+            where dept.deptno in
+            <foreach collection="array" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+</mapper>

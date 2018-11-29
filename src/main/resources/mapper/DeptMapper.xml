@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- namespace 命名空间——name -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="com.batis.hello.IDeptDao">
+	<!-- 
+	1、id等同于方法名，一定要和接口定义一样
+	2、pojo类型的方法的参数，就直接指定它的访问路径
+	3、pojo的SQL参数,#{pojo属性名} -->
+	<insert id="doInsert" parameterType="com.batis.hello.Dept">
+	insert into dept(deptno,dname,loc)
+	values(#{deptID},#{dname},#{location})
+	</insert>
+	<delete id="doDelete">
+		delete dept where deptno=#{x} 
+	</delete>
+	
+	
+	</mapper>
